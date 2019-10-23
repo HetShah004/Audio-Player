@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        .player {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            z-index: 999;
+            top:0;
+        }
+        .player-body {
+            padding: 10px;
+            transition: 1s;
+            border-radius: 10px;
+            background-color: #f1f1f1;
+        }
+        .song-img img {
+            width: 300px;
+            border-radius: 10px;
+        }
+        .player-bar- {
+            width: 60%;
+            height: 5px;
+            background-color: #adafae;
+            margin: 2px;
+            border-radius: 5px;
+        }
+        .hte {
+            height: 100%;
+            border-radius: 5px;
+            background-color: #373a3b;
+            transition: 1s;
+        }
+        .btn-group {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .back- {
+            width: 100%;
+            height: 100vh;
+            background-image: linear-gradient(147deg, #8e9eab, #eef2f3);
+        }
+        .sound-leveler input {
+            -webkit-appearance: none;
+            width: 100px;
+            height: 10px;
+            background: #d3d3d3;
+            outline: none;
+            -webkit-transition: .2s;
+            border-radius: 10px;
+            transition: opacity .2s;
+        }
+        @media only screen and (max-width:500px) {
+            .sound-leveler {
+                opacity: 0;
+            }
+        }
+        .sound-leveler {
+            border-radius: 5px;
+            background-color: white;
+            padding: 20px;
+        }
+        .sound-leveler input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 10px;
+            background: #373a3b;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+    </style>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="back-"></div>
+<audio id="audio" src="">
+</audio>
+<div class="player">
+    <div class="player-body shadow">
+        <div class="song-img">
+            <img draggable="false" src="http://www.transparentpng.com/thumb/music/musical-note-quaver-music-and-multimedia-music-pictures-23.png" id="song-img">
+        </div>
+        <br>
+        <p align="center" class="song-name"><b>Unknown</b></p>
+        <p align="center" class="song-artist">Unknown</p>
+        <div class="player-bar" style="display: flex;justify-content: center;align-items: center">
+            <div class="player-bar-">
+                <div class="hte"></div>
+            </div>
+        </div>
+        <div class="play-buttons" style="display: flex;justify-content: center;align-items: center">
+            <div class="btn-group">
+                <button class="btn btn-light" onmousedown="playPrev()" style="display: flex;justify-content: center;align-items: center"><i class="material-icons">skip_previous</i></button>
+                <button class="btn btn-light play-pause" onmousedown="playAudio()" style="display: flex;justify-content: center;align-items: center"><i class="material-icons">play_arrow</i></button>
+                <button class="btn btn-light" onmousedown="playNext()" style="display: flex;justify-content: center;align-items: center"><i class="material-icons">skip_next</i></button>
+            </div>
+        </div>
+        <br>
+        <div class="sound-leveler">
+            <span><b>Volume&nbsp;</b></span>
+            <input id="sound-leveler" type="range" min="0" max="50" value="50">
+        </div>
+    </div>
+</div>
+<script>
+    function vol() {
+        var range =$("#sound-leveler").val();
+        audio.volume = range/100;
+    }
+    setInterval(vol, 500);
+    var songs = {
+        1: {
+            img: "https://is4-ssl.mzstatic.com/image/thumb/Music118/v4/4c/5f/81/4c5f8109-feca-d959-eaf2-9baa8c858db3/cover.jpg/1000x1000bb.jpeg",
+            address: "songs/WATEVA - Ber Zer Ker [NCS Release].mp3",
+            name: "Ber Zer Ker",
+            artist: "WATEVA"
+        },
+        2: {
+            img: "https://c.saavncdn.com/056/Superhero-English-2016-500x500.jpg",
+            address: "songs/Unknown Brain - Superhero (feat. Chris Linton) [NCS Release].mp3",
+            name: "Superhero",
+            artist: "Unknown Brain"
+        },
+        3: {
+            img: "https://i.ytimg.com/vi/nHUF9QZthX4/maxresdefault.jpg",
+            address: "songs/Hailee Steinfeld - Afterlife (Official Audio).mp3",
+            name:"Afterlife",
+            artist:"Hailee Steinfeld"
+        },
+        5: {
+            img: "https://i1.sndcdn.com/artworks-000453095229-y5m0e2-t500x500.jpg",
+            address: "songs/Post Malone, Swae Lee - Sunflower (Spider-Man Into the Spider-Verse).mp3",
+            name:"Sunflower",
+            artist:"Post Malone, Swae Lee"
+        },
+        6: {
+            img: "https://pbs.twimg.com/media/DwGSIQWVAAElMXJ.jpg",
+            address: "songs/Sub Urban - Cradles [NCS Release].mp3",
+            name:"Cradles",
+            artist:"Sun Urban"
+        }
+    };
+    var audioState = false;
+    var audio = document.getElementById("audio");
+    var crrSong = 0;
+    function playNext() {
+        audio.pause();
+        audioState = false;
+        $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+        if(!(crrSong > Object.keys(songs).length)) {
+            crrSong = crrSong + 1;
+        }
+        audio.src = songs[crrSong.toLocaleString()].address;
+        $("#song-img").fadeOut(500, function () {
+            document.getElementById("song-img").src = songs[crrSong.toLocaleString()].img;
+        });
+        $("#song-img").fadeIn(500);
+        $(".song-name").html("<b>" + songs[crrSong.toLocaleString()].name + "</b>");
+        $(".song-artist").html(songs[crrSong.toLocaleString()].artist);
+        audio.play();
+        $(".play-pause").html("<i class='material-icons'>pause</i>");
+    }
+    function playPrev() {
+        audio.pause();
+        audioState = false;
+        $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+        if(crrSong !== 1) {
+            crrSong = crrSong - 1;
+        }
+        audio.src = songs[crrSong.toLocaleString()].address;
+        $("#song-img").fadeOut(500, function () {
+            document.getElementById("song-img").src = songs[crrSong.toLocaleString()].img;
+        });
+        $("#song-img").fadeIn(500);
+        $(".song-name").html("<b>" + songs[crrSong.toLocaleString()].name + "</b>");
+        $(".song-artist").html(songs[crrSong.toLocaleString()].artist);
+        audio.play();
+        $(".play-pause").html("<i class='material-icons'>pause</i>");
+    }
+    function playAudio() {
+        if(!audioState) {
+            if(!(audio.currentTime >= 0)) {
+                audio.src = songs[crrSong.toLocaleString()].address;
+                $("#song-img").fadeOut(500, function () {
+                    document.getElementById("song-img").src = songs[crrSong.toLocaleString()].img;
+                });
+                $("#song-img").fadeIn(500);
+                $(".song-name").html("<b>" + songs[crrSong.toLocaleString()].name + "</b>");
+                $(".song-artist").html(songs[crrSong.toLocaleString()].artist);
+                audio.play();
+                audioState = true;
+                $(".play-pause").html("<i class='material-icons'>pause</i>");
+            }
+            audio.play();
+            $(".play-pause").html("<i class='material-icons'>pause</i>");
+            audioState = true;
+        }
+        else {
+            audio.pause();
+            $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+            audioState = false;
+        }
+    }
+    function audioBar() {
+        var audioDuration = Math.floor(audio.duration);
+        var audioCrrDuration = Math.floor(audio.currentTime);
+        var percentage = (audioCrrDuration*100)/audioDuration;
+        $(".hte").css({"width": percentage + "%"});
+        if(percentage === 100) {
+            audio.pause();
+            $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+        }
+    }
+    setInterval(audioBar, 1000);
+</script>
+</body>
+</html>
