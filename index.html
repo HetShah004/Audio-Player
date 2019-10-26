@@ -1,0 +1,334 @@
+
+<!doctype html>
+<html>
+<!-- Made By: Het Shah -->
+<head>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+        .player {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            background-image: linear-gradient(147deg, #8e9eab, #eef2f3);
+            background-attachment: fixed;
+        }
+        .player-body {
+            padding: 10px;
+            width: 100%;
+            height: 100%;
+            transition: 1s;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .song-img img {
+            width: 300px;
+            border-radius: 10px;
+        }
+        .player-bar- {
+            width: 100%;
+            height: 5px;
+            background-color: #adafae;
+            margin: 2px;
+            border-radius: 5px;
+        }
+        .hte {
+            height: 100%;
+            border-radius: 5px;
+            background-color: #373a3b;
+            transition: 1s;
+        }
+        .btn-group {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .sound-leveler input {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            background: #d3d3d3;
+            outline: none;
+            -webkit-transition: .2s;
+            border-radius: 10px;
+            transition: opacity .2s;
+        }
+        @media only screen and (max-width:342px) {
+            .player-body {
+                overflow: auto;
+            }
+        }
+        .sound-leveler {
+            border-radius: 5px;
+            background-color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+        .sound-leveler input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 10px;
+            background: #373a3b;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .song-name, .song-artist {
+            color: white;
+        }
+        .player-back {
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            width: 30em;
+            height: 30em;
+            transition: 1s;
+            background-image: url("https://images.pexels.com/photos/167092/pexels-photo-167092.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
+        }
+        .play-buttons button {
+            padding: .375em 2em .375em 2em;
+        }
+    </style>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<audio id="audio" src="">
+</audio>
+<div class="player">
+    <div class="player-back">
+    <div class="player-body shadow">
+        <br>
+        <div id="a">
+        <p align="center" class="song-name"><b>Unknown</b></p>
+        <p align="center" class="song-artist">Unknown</p>
+        <div class="player-bar" style="display: flex;justify-content: center;align-items: center">
+            <div class="player-bar-">
+                <div class="hte"></div>
+            </div>
+        </div>
+        <div class="play-buttons" style="display: flex;justify-content: center;align-items: center;">
+            <div class="btn-group">
+                <button class="btn btn-light" onmousedown="playPrev()" style="display: flex;justify-content: center;align-items: center"><i class="material-icons">skip_previous</i></button>
+                <button class="btn btn-light play-pause" onmousedown="playAudio()" style="display: flex;justify-content: center;align-items: center"><i class="material-icons">play_arrow</i></button>
+                <button class="btn btn-light" onmousedown="playNext()" style="display: flex;justify-content: center;align-items: center"><i class="material-icons">skip_next</i></button>
+            </div>
+        </div>
+        <br>
+            <div class="sound-leveler">
+                <input id="sound-leveler" type="range" min="0" max="50" value="50">
+            </div>
+            <br>
+            <div class="sound-leveler">
+                <button onclick="muteSong()" class="material-icons btn btn-light ">volume_up</button>
+                <button class="btn btn-light repeat-audio" onmousedown="audioRepeat()"><span class="material-icons">repeat</span></button>
+                <button class="btn btn-light" onmousedown="stopSong()"><span class="fas fa-stop"></span></button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+    var isMute = false;
+    function muteSong() {
+        if(isMute) {
+            var range =$("#sound-leveler").val();
+            audio.volume = range/100;
+            $(".volume_up_down").html("<i class='material-icons'>volume_up</i>");
+            isMute = false;
+        }
+        else {
+            audio.volume = 0;
+            isMute = true;
+            $(".volume_up_down").html("<i class='material-icons'>volume_off</i>");
+        }
+    }
+    document.onkeydown = function(e) {
+        if(e.which === 32) {
+            if(audioState === true) {
+                audio.pause();
+                $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+                audioState = false;
+            }
+            else {
+                audio.play();
+                $(".play-pause").html("<i class='material-icons'>pause</i>");
+                audioState = true;
+            }
+        }
+    };
+    function stopSong() {
+        audio.pause();
+        audioState = false;
+        audio.currentTime = 0;
+        $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+    }
+    function vol() {
+        var range =$("#sound-leveler").val();
+        if(isMute) {
+            audio.volume = 0;
+        }
+        else {
+            audio.volume = range/100;
+        }
+    }
+    setInterval(vol, 500);
+    var songs = {
+        5: {
+            img: "https://s.mxmcdn.net/images-storage/albums4/5/1/2/2/6/8/39862215_800_800.jpg",
+            address: "songs/NEFFEX - Touch the Sky _[Copyright Free].mp3",
+            name: "Touch the Sky",
+            artist: "Neffex"
+        },
+        8: {
+            img: "https://is4-ssl.mzstatic.com/image/thumb/Music118/v4/4c/5f/81/4c5f8109-feca-d959-eaf2-9baa8c858db3/cover.jpg/1000x1000bb.jpeg",
+            address: "songs/WATEVA - Ber Zer Ker [NCS Release].mp3",
+            name: "Ber Zer Ker",
+            artist: "WATEVA"
+        },
+        3: {
+            img: "https://i.ytimg.com/vi/nHUF9QZthX4/maxresdefault.jpg",
+            address: "songs/Hailee Steinfeld - Afterlife (Official Audio).mp3",
+            name:"Afterlife",
+            artist:"Hailee Steinfeld"
+        },
+        2: {
+            img: "https://i1.sndcdn.com/artworks-000453095229-y5m0e2-t500x500.jpg",
+            address: "songs/Post Malone, Swae Lee - Sunflower (Spider-Man Into the Spider-Verse).mp3",
+            name:"Sunflower",
+            artist:"Post Malone, Swae Lee"
+        },
+        6: {
+            img: "https://pbs.twimg.com/media/DwGSIQWVAAElMXJ.jpg",
+            address: "songs/Sub Urban - Cradles [NCS Release].mp3",
+            name:"Cradles",
+            artist:"Sun Urban"
+        },
+        7: {
+            img: "https://c.saavncdn.com/056/Superhero-English-2016-500x500.jpg",
+            address: "songs/Unknown Brain - Superhero (feat. Chris Linton) [NCS Release].mp3",
+            name: "Superhero",
+            artist: "Unknown Brain"
+        },
+        9: {
+            img: "https://is2-ssl.mzstatic.com/image/thumb/Music20/v4/40/1e/f5/401ef51b-0b27-b7ae-568b-c37e534ad074/source/1200x1200bb.jpg",
+            address: "songs/Animals vs. Bomb A Drop (TIO Trap Mashup) - Martin Garrix ft. Garmiani.mp3",
+            name: "Bomb A Drop",
+            artist: "Martin Garrix ft. Garmiani"
+        },
+        1: {
+            img: "https://s3.amazonaws.com/pics.fandalism.com/550x550-5ED20FF6-4DA9-4471-B45D36907999D98F.png",
+            address: "songs/NEFFEX- Failure _ [Copyright Free].mp3",
+            name: "Failure",
+            artist: "Neffex"
+        },
+        10: {
+            img: "",
+            address: "songs/Julius Dreisig  Mylky - Cant Get Enough.mp3",
+            name: "Can't Get Enough",
+            artist: "Julius Dreisig, Mylky"
+        }
+    };
+    var audioState = false;
+    var autoPlayState = true;
+    var audio = document.getElementById("audio");
+    var crrSong = 0;
+    function audioRepeat() {
+        if(autoPlayState) {
+            autoPlayState = false;
+            $(".repeat-audio").css({"color": "rgba(0, 0, 0, 0.5)"})
+        }
+        else if(!autoPlayState) {
+            autoPlayState = true;
+            $(".repeat-audio").css({"color": "black"})
+        }
+    }
+    function playNext() {
+        audio.pause();
+        audioState = false;
+        $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+        if(!(crrSong > Object.keys(songs).length)) {
+            crrSong = crrSong + 1;
+        }
+        audio.src = songs[crrSong.toLocaleString()].address;
+        $(".player-back").css({"background-image": "url(" + songs[crrSong.toLocaleString()].img+ ")"});
+        $(".song-name").html("<b>" + songs[crrSong.toLocaleString()].name + "</b>");
+        $(".song-artist").html(songs[crrSong.toLocaleString()].artist);
+        audio.play();
+        audioState = true;
+        $(".play-pause").html("<i class='material-icons'>pause</i>");
+    }
+    function playPrev() {
+        audio.pause();
+        audioState = false;
+        $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+        if(crrSong !== 1) {
+            crrSong = crrSong - 1;
+        }
+        audio.src = songs[crrSong.toLocaleString()].address;
+        $(".player-back").css({"background-image": "url(" + songs[crrSong.toLocaleString()].img+ ")"});
+        $(".song-name").html("<b>" + songs[crrSong.toLocaleString()].name + "</b>");
+        $(".song-artist").html(songs[crrSong.toLocaleString()].artist);
+        audio.play();
+        $(".play-pause").html("<i class='material-icons'>pause</i>");
+        audioState = true;
+    }
+    function playAudio() {
+        if(!audioState) {
+            if(!(audio.currentTime >= 0)) {
+                audio.src = songs[crrSong.toLocaleString()].address;
+                $(".player-back").css({"background-image": "url(" + songs[crrSong.toLocaleString()].img+ ")"});
+                $(".song-name").html("<b>" + songs[crrSong.toLocaleString()].name + "</b>");
+                $(".song-artist").html(songs[crrSong.toLocaleString()].artist);
+                audio.onloadeddata = function() {
+                  if(audioState === false) {
+                      $(".loader").fadeOut(100);
+                  }
+                };
+                audio.play();
+                audioState = true;
+                $(".play-pause").html("<i class='material-icons'>pause</i>");
+            }
+            audio.play();
+            $(".play-pause").html("<i class='material-icons'>pause</i>");
+            audioState = true;
+        }
+        else {
+            audio.pause();
+            $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+            audioState = false;
+        }
+    }
+    function audioBar() {
+        var audioDuration = audio.duration;
+        var audioCrrDuration = audio.currentTime;
+        var percentage = (audioCrrDuration*100)/audioDuration;
+        $(".hte").css({"width": percentage + "%"});
+        if(audio.paused === true || audioState === false) {
+            $(".play-pause").html("<i class='material-icons'>play_arrow</i>");
+        }
+        if(percentage === 100) {
+            audio.pause();
+            if(autoPlayState === true) {
+                playNext();
+            }
+        }
+    }
+    setInterval(audioBar, 1000);
+</script>
+</body>
+</html>
