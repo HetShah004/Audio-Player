@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
 <!-- Made By: Het Shah -->
@@ -35,14 +34,14 @@
         .player-bar- {
             width: 100%;
             height: 5px;
-            background-color: #adafae;
+            background-color: #373a3b;
             margin: 2px;
             border-radius: 5px;
         }
         .hte {
             height: 100%;
             border-radius: 5px;
-            background-color: #373a3b;
+            background-color: #adafae;
             transition: 1s;
         }
         .btn-group {
@@ -112,7 +111,6 @@
 <div class="player">
     <div class="player-back">
     <div class="player-body shadow">
-        <br>
         <div id="a">
         <p align="center" class="song-name"><b>Unknown</b></p>
         <p align="center" class="song-artist">Unknown</p>
@@ -130,11 +128,11 @@
         </div>
         <br>
             <div class="sound-leveler">
-                <input id="sound-leveler" type="range" min="0" max="50" value="50">
+                <input id="sound-leveler" type="range" min="0" max="20" value="20">
             </div>
             <br>
             <div class="sound-leveler">
-                <button onclick="muteSong()" class="material-icons btn btn-light ">volume_up</button>
+                <button onclick="muteSong()" class="material-icons volume_up_down btn btn-light ">volume_up</button>
                 <button class="btn btn-light repeat-audio" onmousedown="audioRepeat()"><span class="material-icons">repeat</span></button>
                 <button class="btn btn-light" onmousedown="stopSong()"><span class="fas fa-stop"></span></button>
             </div>
@@ -147,14 +145,14 @@
     function muteSong() {
         if(isMute) {
             var range =$("#sound-leveler").val();
-            audio.volume = range/100;
+            audio.volume = range;
             $(".volume_up_down").html("<i class='material-icons'>volume_up</i>");
             isMute = false;
         }
         else {
             audio.volume = 0;
-            isMute = true;
             $(".volume_up_down").html("<i class='material-icons'>volume_off</i>");
+            isMute = true;
         }
     }
     document.onkeydown = function(e) {
@@ -250,11 +248,13 @@
     function audioRepeat() {
         if(autoPlayState) {
             autoPlayState = false;
-            $(".repeat-audio").css({"color": "rgba(0, 0, 0, 0.5)"})
+            $(".repeat-audio").css({"color": "rgba(0, 0, 0, 0.5)"});
         }
         else if(!autoPlayState) {
+            if(crrSong !== Object.keys(songs).length)
             autoPlayState = true;
-            $(".repeat-audio").css({"color": "black"})
+            crrSong = 1;
+            $(".repeat-audio").css({"color": "black"});
         }
     }
     function playNext() {
@@ -265,7 +265,12 @@
             crrSong = crrSong + 1;
         }
         audio.src = songs[crrSong.toLocaleString()].address;
-        $(".player-back").css({"background-image": "url(" + songs[crrSong.toLocaleString()].img+ ")"});
+        if(songs[crrSong.toLocaleString()].img === "") {
+            $(".player-back").css({"background-image": "url(" + "https://images.pexels.com/photos/167092/pexels-photo-167092.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" + ")"});
+        }
+        else {
+            $(".player-back").css({"background-image": "url(" + songs[crrSong.toLocaleString()].img+ ")"});
+        }
         $(".song-name").html("<b>" + songs[crrSong.toLocaleString()].name + "</b>");
         $(".song-artist").html(songs[crrSong.toLocaleString()].artist);
         audio.play();
